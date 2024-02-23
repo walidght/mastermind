@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="{{ url_for('static', filename='scripts/main.js') }}" defer></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+        <title>Mastermind</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="code">
+                <div class="secret-code">
+                    <div class="circle gray"></div>
+                    <div class="circle gray"></div>
+                    <div class="circle gray"></div>
+                    <div class="circle gray"></div>
+                </div>
+                <a href="#" class="show-code-button">show code</a>
+                <a href=".">reset</a>
+            </div>
+            <div class="guesses">
+                <div class="guess">
+                    <div class="code-representation">
+                        <div class="circle gray"></div>
+                        <div class="circle gray"></div>
+                        <div class="circle gray"></div>
+                        <div class="circle gray"></div>
+                    </div>
+                    <div class="evaluation">
+                        <div class="small-circle gray"></div>
+                        <div class="small-circle gray"></div>
+                        <div class="small-circle gray"></div>
+                        <div class="small-circle gray"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="new-guess">
+                <div class="empty circle"></div>
+                <div class="empty circle"></div>
+                <div class="empty circle"></div>
+                <div class="empty circle"></div>
+                <button class="guess-button">Guess</button>
+            </div>
+            <div class="buttons">
+                <div class="colors">
+                    <button
+                        class="color-button circle green selected-color"
+                        data-color="green"
+                    ></button>
+                    <button
+                        class="color-button circle yellow"
+                        data-color="yellow"
+                    ></button>
+                    <button
+                        class="color-button circle blue"
+                        data-color="blue"
+                    ></button>
+                    <button
+                        class="color-button circle red"
+                        data-color="red"
+                    ></button>
+                    <button
+                        class="color-button circle black"
+                        data-color="black"
+                    ></button>
+                    <div
+                        class="color-button circle white"
+                        data-color="white"
+                    ></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
