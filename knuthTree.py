@@ -56,7 +56,16 @@ def knuth(codes, candidates, guess):
                     if max_count_win < count_win:
                         max_count_win = count_win
                         next_res = res
-                knuthTree[i] = next_res
+                if len(codes_keep) == 2:
+                    if all([isinstance(x, int) for x in next_res[2]]):
+                        knuthTree[i] = (nb_candidate, next_res[1]+['x'])
+                    else:
+                        knuthTree[i] = next_res
+                else:
+                    if all([isinstance(x, int) for x in next_res[2]]):
+                        knuthTree[i] = (nb_candidate, next_res[1])
+                    else:
+                        knuthTree[i] = next_res
         # sinon c'est fini pour cette branche
         else:
             knuthTree[i] = nb_candidate
@@ -192,10 +201,46 @@ def calcul_count_win(res):
     count = 0
     for res_alpha in res:
         if type(res_alpha) == tuple:
-            count += calcul_count_win(res_alpha[2])
+            if len(res_alpha) == 3:
+                count += calcul_count_win(res_alpha[2])
     if res[-1] == 1:
         count += 1
     return count
+
+def get_str_knuth_tree(n, guess, knuthTree):
+    guess_str = ''
+    for x in guess:
+        guess_str += x
+    buffer = str(n)+'('+guess_str+': '
+    for i in range(len(knuthTree)):
+        alpha = knuthTree[i]
+        if not isinstance(alpha, tuple):
+            if i != len(knuthTree)-1:
+                buffer += str(alpha)+', '
+            else:
+                buffer += str(alpha)+')'
+        else:
+            if len(alpha) == 2:
+                subn, sub_guess = alpha
+                sub_guess_str = ''
+                for x in sub_guess:
+                    sub_guess_str += x
+                if i != len(knuthTree)-1:
+                    buffer += str(subn)+'('+sub_guess_str+'), '
+                else:
+                    buffer += str(subn)+'('+sub_guess_str+'))'
+            else:
+                subn, sub_guess, sub_tree = alpha
+                buffer += get_str_knuth_tree(subn, sub_guess, sub_tree)+', '
+    return buffer
+
+def print_result(n, guess, knuthTree):
+    buffer = get_str_knuth_tree(n, guess, knuthTree)
+
+    with open("result.txt", "w") as f:
+        f.write(buffer)
+
+    return
 
 if __name__ == "__main__":
     color = '123456'
@@ -204,6 +249,7 @@ if __name__ == "__main__":
     guess = ['1', '1', '2', '2']
 
     n, guess, knuthTree = knuth(codes, codes, guess)
-    for alpha in knuthTree:
-        print(alpha)
-        print()
+    #for alpha in knuthTree:
+    #    print(alpha)
+    #    print()
+    print_result(n, guess, knuthTree)
