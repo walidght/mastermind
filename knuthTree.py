@@ -4,73 +4,43 @@ import itertools
 def knuth(codes, candidates, guess):
     nb_candidates, list_candidates = calcul_candidate(candidates, guess)
     knuthTree = [None]*15
+    answers = []
 
     # pour chaque alpha(i, j)
-    for i, nb_candidate in enumerate(nb_candidates):
+    for i in range(len(list_candidates)):
         # s'il a plus que 2 codes possibles
-        if nb_candidate > 2:
-            val_remaining, count_remaining = [np.inf], [0]
-            codes_keep = []
+        if len(list_candidates[i]) > 2:
+            val_remaining = np.inf
+            code_keep = None
             # pour chque code possible
             for code in codes:
                 new_nb_candidates, _ = calcul_candidate(list_candidates[i], list(code))
                 # si c'est bien la réponse
                 if new_nb_candidates == [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]:
-                    knuthTree[i] = (nb_candidate, code)
+                    knuthTree[i] = (len(list_candidates[i]), code)
+                    code_keep = list(code)
                     break
                 # sinon on prend celui qui minimise le plus grand nombre de candidat
                 else:
-                    val, count = np.unique(new_nb_candidates, return_counts=True)
-                    sort_index = np.argsort(val)[::-1]
-                    val = val[sort_index]
-                    count = count[sort_index]
-                    for j in range(len(val_remaining)):
-                        # si le plus grand nombre de candidat possible est plus petit que le meilleur stoqué
-                        if val[j] < val_remaining[j]:
-                            val_remaining, count_remaining = val, count
-                            codes_keep = [list(code)]
-                            break
-                        # s'ils ont le plus grand nombre de candidat possible est le même, on compare l'occurance
-                        elif val[j] == val_remaining[j]:
-                            # s'il a un plus petit nombre d'occurance, on le prend
-                            if count[j] < count_remaining[j]:
-                                val_remaining, count_remaining, val, count
-                                codes_keep = [list(code)]
-                                break
-                            # s'il a les mêmes nombres de candidat possibles
-                            elif count[j] == count_remaining[j]:
-                                if j == len(val_remaining)-1:
-                                    codes_keep.append(list(code))
-                            # sinon on le prend pas
-                            else:
-                                break
-                        # sinon on le prend pas
-                        else:
-                            break
+                    # si le plus grand nombre de candidat possible est plus petit que le meilleur stoqué
+                    if max(new_nb_candidates) < val_remaining:
+                        val_remaining = max(new_nb_candidates)
+                        code_keep = list(code)
             if knuthTree[i] == None:
-                max_count_win = -1
-                next_res = None
-                for code_keep in codes_keep:
-                    res = knuth(codes, list_candidates[i], code_keep)
-                    count_win = calcul_count_win(res[2])
-                    if max_count_win < count_win:
-                        max_count_win = count_win
-                        next_res = res
-                if len(codes_keep) == 2:
-                    if all([isinstance(x, int) for x in next_res[2]]):
-                        knuthTree[i] = (nb_candidate, next_res[1]+['x'])
-                    else:
-                        knuthTree[i] = next_res
+                res, next_answers = knuth(codes, list_candidates[i], code_keep)
+                if len(next_answers) < 2:
+                    knuthTree[i] = (len(list_candidates[i]), code_keep)
+                elif len(next_answers) == 2:
+                    knuthTree[i] = (len(list_candidates[i]), next_answers[0]+['x'])
                 else:
-                    if all([isinstance(x, int) for x in next_res[2]]):
-                        knuthTree[i] = (nb_candidate, next_res[1])
-                    else:
-                        knuthTree[i] = next_res
+                    knuthTree[i] = res
+            if code_keep not in answers:
+                answers.append(code_keep)
         # sinon c'est fini pour cette branche
         else:
-            knuthTree[i] = nb_candidate
-
-    return (sum(nb_candidates), guess, knuthTree)
+            knuthTree[i] = len(list_candidates[i])
+            
+    return (sum(nb_candidates), guess, knuthTree), answers
 
 def calcul_candidate(p, guess):
     candidate = [0]*15
@@ -248,8 +218,6 @@ if __name__ == "__main__":
 
     guess = ['1', '1', '2', '2']
 
-    n, guess, knuthTree = knuth(codes, codes, guess)
-    #for alpha in knuthTree:
-    #    print(alpha)
-    #    print()
+    (n, guess, knuthTree), _ = knuth(codes, codes, guess)
+    print(n, guess, knuthTree)
     print_result(n, guess, knuthTree)
