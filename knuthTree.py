@@ -31,9 +31,46 @@ def knuth(codes, candidates, guess):
                 if len(next_answers) < 2:
                     knuthTree[i] = (len(list_candidates[i]), code_keep)
                 elif len(next_answers) == 2:
-                    knuthTree[i] = (len(list_candidates[i]), next_answers[0]+['x'])
+                    knuthTree[i] = (len(list_candidates[i]), code_keep+['x'])
                 else:
                     knuthTree[i] = res
+            if code_keep not in answers:
+                answers.append(code_keep)
+        # sinon c'est fini pour cette branche
+        else:
+            knuthTree[i] = len(list_candidates[i])
+            
+    return (sum(nb_candidates), guess, knuthTree), answers
+
+def knuth_all(codes, candidates, guess):
+    nb_candidates, list_candidates = calcul_candidate(candidates, guess)
+    knuthTree = [None]*15
+    answers = []
+
+    # pour chaque alpha(i, j)
+    for i in range(len(list_candidates)):
+        # s'il a plus que 2 codes possibles
+        if len(list_candidates[i]) > 2:
+            val_remaining = np.inf
+            code_keep = None
+            # pour chque code possible
+            for code in codes:
+                new_nb_candidates, _ = calcul_candidate(list_candidates[i], list(code))
+                # si c'est bien la réponse
+                if new_nb_candidates == [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]:
+                    res, _ = knuth(codes, list_candidates[i], code_keep)
+                    knuthTree[i] = res
+                    code_keep = list(code)
+                    break
+                # sinon on prend celui qui minimise le plus grand nombre de candidat
+                else:
+                    # si le plus grand nombre de candidat possible est plus petit que le meilleur stoqué
+                    if max(new_nb_candidates) < val_remaining:
+                        val_remaining = max(new_nb_candidates)
+                        code_keep = list(code)
+            if knuthTree[i] == None:
+                res, _ = knuth_all(codes, list_candidates[i], code_keep)
+                knuthTree[i] = res
             if code_keep not in answers:
                 answers.append(code_keep)
         # sinon c'est fini pour cette branche
@@ -167,16 +204,6 @@ def calcul_candidate(p, guess):
 
     return candidate, allp
 
-def calcul_count_win(res):
-    count = 0
-    for res_alpha in res:
-        if type(res_alpha) == tuple:
-            if len(res_alpha) == 3:
-                count += calcul_count_win(res_alpha[2])
-    if res[-1] == 1:
-        count += 1
-    return count
-
 def get_str_knuth_tree(n, guess, knuthTree):
     guess_str = ''
     for x in guess:
@@ -207,17 +234,55 @@ def get_str_knuth_tree(n, guess, knuthTree):
 def print_result(n, guess, knuthTree):
     buffer = get_str_knuth_tree(n, guess, knuthTree)
 
-    with open("result.txt", "w") as f:
+    with open("result_all.txt", "w") as f:
         f.write(buffer)
 
     return
 
+def calcul_max_guess_remaining(h, knuthTree):
+    maxh = 0
+    for alpha in knuthTree:
+        if isinstance(alpha, tuple):
+            maxh = max(maxh, calcul_max_guess_remaining(h+1, alpha[2]))
+        else:
+            maxh = max(maxh, h+alpha)
+    return maxh
+
 if __name__ == "__main__":
     color = '123456'
     codes = list(itertools.product(color, repeat=4))
+    candidates = list(itertools.product(color, repeat=4))
+    alpha = {(0, 4) : 0, (0, 3) : 1, (0, 2) : 2, (0, 1) : 3, (0, 0) : 4,
+             (1, 3) : 5, (1, 2) : 6, (1, 1) : 7, (1, 0) : 8,
+             (2, 2) : 9, (2, 1) : 10, (2, 0) : 11,
+             (3, 1) : 12, (3, 0) : 13,
+             (4, 0) : 14}
 
     guess = ['1', '1', '2', '2']
 
-    (n, guess, knuthTree), _ = knuth(codes, codes, guess)
-    print(n, guess, knuthTree)
-    print_result(n, guess, knuthTree)
+    #(n, guess, knuthTree), _ = knuth(codes, candidates, guess)
+    #(n, guess, knuthTree), _ = knuth_all(codes, candidates, guess)
+    #print(n, guess, knuthTree)
+    #print_result(n, guess, knuthTree)
+    #nb_candidates, list_candidates = calcul_candidate(candidates, guess)
+    #h = calcul_max_guess_remaining(1, knuthTree)
+    #print(h)
+
+    nb_candidates, list_candidates = calcul_candidate(candidates, guess)
+    b, w = 2, 1
+    candidates = list_candidates[alpha[(b, w)]]
+    print(len(candidates))
+
+    guess2 = ['1', '2', '1', '4']
+    nb_candidates, list_candidates = calcul_candidate(candidates, guess2)
+    b, w = 0, 2
+    candidates = list_candidates[alpha[(b, w)]]
+    print(len(candidates))
+
+    guess3 = ['1', '1', '2', '3']
+    nb_candidates, list_candidates = calcul_candidate(candidates, guess3)
+    b, w = 3, 0
+    candidates = list_candidates[alpha[(b, w)]]
+    print(len(candidates))
+    
+    print("answer :", candidates)
