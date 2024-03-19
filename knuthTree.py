@@ -258,51 +258,39 @@ if __name__ == "__main__":
              (3, 1) : 12, (3, 0) : 13,
              (4, 0) : 14}
 
-    guess = ['1', '1', '2', '2']
     turn = 1
+    win = False
+    # à récupérer le answer du jeu
+    answer = ['2', '1', '2', '3']
+    while (turn <= 10) and (not win):
+        if turn == 1:
+            best_guess = ['1', '1', '2', '2']
+            (_, _, knuthTree), _ = knuth_all(codes, candidates, best_guess)
+            print("max guess :", calcul_max_guess_remaining(turn, knuthTree))
+        else:
+            if isinstance(knuthTree[alpha[(b, w)]], tuple):
+                best_guess = knuthTree[alpha[(b, w)]][1]
+                (_, _, knuthTree), _ = knuth_all(codes, candidates, best_guess)
+                print("max guess :", calcul_max_guess_remaining(turn, knuthTree))
+            else:
+                print("max guess :", turn)
+        
+        # récupérer le guess du joueur
+        # guess =
+        
+        print("donner votre code")
+        guess = list(input().split())
+        if guess == answer:
+            win = True
 
-    #(n, guess, knuthTree), _ = knuth(codes, candidates, guess)
-    #(n, guess, knuthTree), _ = knuth_all(codes, candidates, guess)
-    #print(n, guess, knuthTree)
-    #print_result(n, guess, knuthTree)
-    #nb_candidates, list_candidates = calcul_candidate(candidates, guess)
-    #h = calcul_max_guess_remaining(1, knuthTree)
-    #print(h)
-
-    best_guess = ['1', '1', '2', '2']
-    (_, _, knuthTree), _ = knuth_all(codes, candidates, best_guess)
-    print("max guess :", calcul_max_guess_remaining(turn, knuthTree))
-    nb_candidates, list_candidates = calcul_candidate(candidates, guess)
-    b, w = 2, 1
-    candidates = list_candidates[alpha[(b, w)]]
-    turn += 1
-    #print(len(candidates))
-
-    best_guess = knuthTree[alpha[(b, w)]][1]
-    (_, _, knuthTree), _ = knuth_all(codes, candidates, best_guess)
-    print("max guess :", calcul_max_guess_remaining(turn, knuthTree))
-    guess2 = ['1', '2', '1', '4']
-    nb_candidates, list_candidates = calcul_candidate(candidates, guess2)
-    b, w = 0, 2
-    candidates = list_candidates[alpha[(b, w)]]
-    turn += 1
-    #print(len(candidates))
-
-    best_guess = knuthTree[alpha[(b, w)]][1]
-    (_, _, knuthTree), _ = knuth_all(codes, candidates, best_guess)
-    print("max guess :", calcul_max_guess_remaining(turn, knuthTree))
-    guess3 = ['1', '1', '2', '3']
-    nb_candidates, list_candidates = calcul_candidate(candidates, guess3)
-    b, w = 3, 0
-    candidates = list_candidates[alpha[(b, w)]]
-    turn += 1
-    #print(len(candidates))
-
-    if isinstance(knuthTree[alpha[(b, w)]], tuple):
-        best_guess = knuthTree[alpha[(b, w)]][1]
-        (_, _, knuthTree), _ = knuth_all(codes, candidates, best_guess)
-        print("max guess :", calcul_max_guess_remaining(turn, knuthTree))
+        nb_candidates, list_candidates = calcul_candidate(candidates, guess)
+        # à récupérer b, w du jeu
+        b, w = 2, 1
+        candidates = list_candidates[alpha[(b, w)]]
+        turn += 1
+        
+    if turn > 10:
+        print("you lose")
     else:
-        print("max guess :", turn)
-    
-    print("answer :", candidates)
+        print("you win")
+    print("answer :", answer)
