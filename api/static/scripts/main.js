@@ -39,6 +39,22 @@ function generateRandomCode() {
     for (let i = 0; i < 4; i++) {
         randomArray.push(Math.floor(Math.random() * 6));
     }
+
+    fetch('/answer', { 
+        method: 'POST', 
+        headers: { 
+            'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({data: randomArray}) 
+    }) 
+    .then(response => response.text()) 
+    .then(result => { 
+        console.log(result); 
+    }) 
+    .catch(error => { 
+        console.error('Error:', error); 
+    }); 
+
     return randomArray;
 }
 
@@ -197,6 +213,21 @@ document.querySelector('.guess-button').addEventListener('click', (e) => {
     all_guesses[guesses_number][3] = new_guess[3];
 
     all_evaluations[guesses_number] = evaluate(new_guess, secret_code);
+
+    fetch('/guess', { 
+        method: 'POST', 
+        headers: { 
+            'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({guess: all_guesses, eval: all_evaluations, nb_guess: guesses_number}) 
+    }) 
+    .then(response => response.text()) 
+    .then(result => { 
+        console.log(result); 
+    }) 
+    .catch(error => { 
+        console.error('Error:', error); 
+    }); 
 
     guesses_number += 1;
 
