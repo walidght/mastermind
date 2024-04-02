@@ -44,11 +44,11 @@ def getGuess():
     print('nb_ guess', nb_guess)
     _, list_candidates = calcul_candidate(candidates, guess)
     _, _, _, knuthTree = knuth_all(codes, candidates, guess)
-    max_guess_remaining = calcul_max_guess_remaining(nb_guess, knuthTree, answer)
+    max_guess_remaining = calcul_max_guess_remaining(nb_guess, knuthTree, tuple(answer))
     candidates = list_candidates[index]
     print("max remaining", max_guess_remaining)
     print("candidates", candidates)
-    return {"max" : max_guess_remaining}
+    return {"max" : max_guess_remaining-nb_guess}
 
 if __name__ == '__main__':
     app.run(debug=True)
