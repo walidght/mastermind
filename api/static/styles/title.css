@@ -1,0 +1,54 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    background-color: beige;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    padding-top: 10%;
+}
+
+.title{
+    display: absolute;
+    text-align: center;
+    font-size: 50px;
+}
+
+.mode{
+    display: flex;
+    flex-direction: row;
+    padding-top: 30%;
+}
+
+button{
+    text-align: center;
+    margin: 20px 20px;
+    font-size: 28px;
+    padding: 15px 15px
+}
+
+.difficulty{
+    display: flex;
+    flex-direction: row;
+    padding-top: 20%;
+}
+
+.back{
+    position: absolute;
+    top: 10%;
+    left: 20%;
+}
+
+#back{
+    text-align: center;
+    margin: 20px 20px;
+    font-size: 16px;
+    padding: 10px 10px
+}

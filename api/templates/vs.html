@@ -3,8 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script src="/scripts/main.js" defer></script>
-        <link rel="stylesheet" href="/styles/main.css" />
+        <script src="/scripts/vs.js" defer></script>
+        <link rel="stylesheet" href="/styles/vs.css" />
         <title>Mastermind</title>
     </head>
     <body>
@@ -17,21 +17,39 @@
                     <div class="circle gray"></div>
                 </div>
                 <a href="#" class="show-code-button">show code</a>
-                <a href="/solo">reset</a>
+                <a href="/vs">reset</a>
             </div>
-            <div class="guesses">
-                <div class="guess">
-                    <div class="code-representation">
-                        <div class="circle gray"></div>
-                        <div class="circle gray"></div>
-                        <div class="circle gray"></div>
-                        <div class="circle gray"></div>
+            <div class="block_guesses">
+                <div class="guesses">
+                    <div class="guess">
+                        <div class="code-representation">
+                            <div class="circle gray"></div>
+                            <div class="circle gray"></div>
+                            <div class="circle gray"></div>
+                            <div class="circle gray"></div>
+                        </div>
+                        <div class="evaluation">
+                            <div class="small-circle gray"></div>
+                            <div class="small-circle gray"></div>
+                            <div class="small-circle gray"></div>
+                            <div class="small-circle gray"></div>
+                        </div>
                     </div>
-                    <div class="evaluation">
-                        <div class="small-circle gray"></div>
-                        <div class="small-circle gray"></div>
-                        <div class="small-circle gray"></div>
-                        <div class="small-circle gray"></div>
+                </div>
+                <div class="guesses_AI">
+                    <div class="guess_AI">
+                        <div class="code-representation_AI">
+                            <div class="circle gray"></div>
+                            <div class="circle gray"></div>
+                            <div class="circle gray"></div>
+                            <div class="circle gray"></div>
+                        </div>
+                        <div class="evaluation_AI">
+                            <div class="small-circle gray"></div>
+                            <div class="small-circle gray"></div>
+                            <div class="small-circle gray"></div>
+                            <div class="small-circle gray"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,12 +87,6 @@
                         data-color="white"
                     ></div>
                 </div>
-            </div>
-            <div class="stats">
-                <div>code atteignable au max :</div>
-                <div id="max"></div>
-                <div>codes valides restant:</div>
-                <div id="possibles"></div>
             </div>
         </div>
     </body>

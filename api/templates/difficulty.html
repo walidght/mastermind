@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="/scripts/title.js" defer></script>
+        <link rel="stylesheet" href="/styles/title.css" />
+        <title>Mastermind</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="title">
+                Difficulty
+            </div>
+            <form class="difficulty">
+                <button type="reset" onclick="location.href='/vs', select_difficulty(0)">Normal</button>
+                <button type="reset" onclick="location.href='/vs', select_difficulty(1)">Hard</button>
+            </form>
+            <form class="back">
+                <button id="back" type="reset" onclick="location.href='/'">Go back</button>
+            </form>
+        </div>
+    </body>
+</html>

@@ -10,8 +10,18 @@ body{
 }
 
 .container {
-    width: 20%;
+    width: 40%;
     height: 100vh;
+}
+
+.block_guesses {
+    display: flex;
+    flex-direction: row;
+    gap : 2.5rem  ;
+    padding: .5rem 0;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+
 }
 
 .guesses {
@@ -19,12 +29,22 @@ body{
     flex-direction: column-reverse;
     gap : .5rem  ;
     padding: .5rem 0;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+}
 
+.guesses_AI {
+    display: flex;
+    flex-direction: column-reverse;
+    gap : .5rem;
+    padding: .5rem 0;
+    border-left: 1px solid black;
 }
 
 .guess {
+    display: flex;
+    gap: 2rem;
+}
+
+.guess_AI {
     display: flex;
     gap: 2rem;
 }
@@ -48,7 +68,22 @@ body{
 
 }
 
+.circle_AI{
+    width: 2rem;
+    height: 2rem;
+    border-radius: 10rem;
+    outline: none;
+    border: none;
+
+}
+
 .evaluation{
+    display: grid;
+    grid-template-columns: 1rem 1rem;
+    gap: .2rem;
+}
+
+.evaluation_AI{
     display: grid;
     grid-template-columns: 1rem 1rem;
     gap: .2rem;
@@ -113,6 +148,12 @@ body{
     gap: 1rem;
 }
 
+.code-representation_AI {
+    display: flex;
+    gap: 1rem;
+    padding-left: 20%;
+}
+
 .secret-code {
     display: flex;
     gap: 1rem;
@@ -122,13 +163,5 @@ body{
     gap: 1rem;
     align-items: center;
     padding: 0.5rem 0;
-}
-
-.stats{
-    position: absolute;
-    background-color: white;
-    top: 10%;
-    right: 20%;
-    padding: 10px 10px;
-    border: thick double cornflowerblue;
+    padding-left: 30%;
 }

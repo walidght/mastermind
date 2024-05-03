@@ -34,6 +34,31 @@ const all_evaluations = [
     [0, 0],
 ];
 
+const all_guesses_AI = [
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+];
+const all_evaluations_AI = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+];
+
 function generateRandomCode() {
     const randomArray = [];
     for (let i = 0; i < 4; i++) {
@@ -64,9 +89,9 @@ const guess_template = (
     first = 'gray',
     second = 'gray',
     third = 'gray',
-    forth = 'gray'
+    forth = 'gray',
 ) => {
-    console.log(first, second, third);
+    //console.log(first, second, third);
     // Create div elements
     const guessDiv = document.createElement('div');
     guessDiv.classList.add('guess');
@@ -88,6 +113,60 @@ const guess_template = (
     // Create evaluation element
     const evaluationDiv = document.createElement('div');
     evaluationDiv.classList.add('evaluation');
+
+
+    for (let i = 0; i < 4; i++) {
+        let eval_col = 'gray';
+        const smallCircleDiv = document.createElement('div');
+        if (black > 0) {
+            eval_col = 'black';
+            black -= 1;
+        } else if (white > 0) {
+            eval_col = 'white';
+            white -= 1;
+        }
+        smallCircleDiv.classList.add('small-circle', eval_col);
+        evaluationDiv.appendChild(smallCircleDiv);
+    }
+
+    // Append codeRepresentationDiv and evaluationDiv to guessDiv
+    guessDiv.appendChild(codeRepresentationDiv);
+    guessDiv.appendChild(evaluationDiv);
+
+    return guessDiv;
+};
+
+const guess_template_AI = (
+    black,
+    white,
+    first = 'gray',
+    second = 'gray',
+    third = 'gray',
+    forth = 'gray',
+) => {
+    console.log("guess_template_AI", black, white, first, second, third, forth);
+    // Create div elements
+    const guessDiv = document.createElement('div');
+    guessDiv.classList.add('guess_AI');
+    const codeRepresentationDiv = document.createElement('div');
+    codeRepresentationDiv.classList.add('code-representation_AI');
+
+    // Create circle elements
+    const circles = [first, second, third, forth].map((color) => {
+        const circleDiv = document.createElement('div');
+        circleDiv.classList.add('circle', color);
+        return circleDiv;
+    });
+
+    // Append circles to codeRepresentationDiv
+    circles.forEach((circle) => {
+        codeRepresentationDiv.appendChild(circle);
+    });
+
+    // Create evaluation element
+    const evaluationDiv = document.createElement('div');
+    evaluationDiv.classList.add('evaluation_AI');
+
 
     for (let i = 0; i < 4; i++) {
         let eval_col = 'gray';
@@ -116,6 +195,9 @@ const update_all_guesses = () => {
     guesses_container.innerHTML = '';
     console.log('aftetr clearging');
 
+    guesses_AI_container = document.querySelector('.guesses_AI');
+    guesses_AI_container.innerHTML = '';
+
     for (let i = 0; i < 10; i++) {
         if (i < guesses_number) {
             console.log('if');
@@ -129,10 +211,16 @@ const update_all_guesses = () => {
                     get_color_from_int(all_guesses[i][3])
                 )
             );
+            guesses_AI_container.appendChild(
+                guess_template_AI(all_evaluations_AI[i][0], all_evaluations_AI[i][1])
+            );
         } else {
             console.log('else');
             guesses_container.appendChild(
                 guess_template(all_evaluations[i][0], all_evaluations[i][1])
+            );
+            guesses_AI_container.appendChild(
+                guess_template_AI(all_evaluations_AI[i][0], all_evaluations_AI[i][1])
             );
         }
     }
@@ -146,16 +234,74 @@ const update_all_guesses = () => {
     }) 
     .then(response => response.text()) 
     .then(result => { 
-        console.log(result);
-        res = result.split(',')
-        max = document.getElementById("max");
-        max.innerHTML = res[0];
-        possibles = document.getElementById("possibles");
-        possibles.innerHTML = res[1];
+        console.log(result); 
     }) 
     .catch(error => { 
         console.error('Error:', error); 
     }); 
+
+    fetch('/AI_eval', {
+        method: 'POST', 
+        headers: { 
+            'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({guess: all_guesses_AI, eval: all_evaluations_AI, nb_guess: guesses_number}) 
+    })
+    .then(response => response.text()) 
+    .then(result => { 
+        console.log(result);
+    }) 
+    .catch(error => { 
+        console.error('Error:', error); 
+    });
+};
+
+const update_all_guesses_withAI = () => {
+    guesses_container = document.querySelector('.guesses');
+    console.log('aftetr clearging');
+    guesses_container.innerHTML = '';
+    console.log('aftetr clearging');
+
+    guesses_AI_container = document.querySelector('.guesses_AI');
+    guesses_AI_container.innerHTML = '';
+    console.log("all_guesses_AI", all_guesses_AI);
+    console.log("all_eval_AI", all_evaluations_AI);
+
+    for (let i = 0; i < 10; i++) {
+        if (i < guesses_number) {
+            console.log('if');
+            guesses_container.appendChild(
+                guess_template(
+                    all_evaluations[i][0],
+                    all_evaluations[i][1],
+                    get_color_from_int(all_guesses[i][0]),
+                    get_color_from_int(all_guesses[i][1]),
+                    get_color_from_int(all_guesses[i][2]),
+                    get_color_from_int(all_guesses[i][3])
+                )
+            );
+            console.log("if_AI")
+            guesses_AI_container.appendChild(
+                guess_template_AI(
+                    all_evaluations_AI[i][0],
+                    all_evaluations_AI[i][1],
+                    get_color_from_int(all_guesses_AI[i][0]),
+                    get_color_from_int(all_guesses_AI[i][1]),
+                    get_color_from_int(all_guesses_AI[i][2]),
+                    get_color_from_int(all_guesses_AI[i][3])
+                )
+            );
+        } else {
+            console.log('else');
+            guesses_container.appendChild(
+                guess_template(all_evaluations[i][0], all_evaluations[i][1])
+            );
+            guesses_AI_container.appendChild(
+                guess_template_AI(all_evaluations_AI[i][0], all_evaluations_AI[i][1])
+            );
+        }
+    }
+    console.log("guesses_AI_container", guesses_AI_container);
 };
 
 const get_color_from_int = (color) => {
@@ -212,7 +358,7 @@ empty_buttons.forEach((e, i) =>
     })
 );
 
-document.querySelector('.guess-button').addEventListener('click', (e) => {
+document.querySelector('.guess-button').addEventListener('click', async (e) => {
     if (won) {
         alert('You already won');
         return;
@@ -230,9 +376,39 @@ document.querySelector('.guess-button').addEventListener('click', (e) => {
     all_guesses[guesses_number][0] = new_guess[0];
     all_guesses[guesses_number][1] = new_guess[1];
     all_guesses[guesses_number][2] = new_guess[2];
-    all_guesses[guesses_number][3] = new_guess[3];
+    all_guesses[guesses_number][3] = new_guess[3]; 
 
     all_evaluations[guesses_number] = evaluate(new_guess, secret_code);
+
+    let AI_guess = NaN;
+
+    await fetch('/AI', {
+        method: 'POST', 
+        headers: { 
+            'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({eval: all_evaluations_AI, nb_guess: guesses_number}) 
+    })
+    .then(response => response.text()) 
+    .then(result => {
+        console.log('result = ');
+        console.log(result);
+        AI_guess = result.split(''); 
+        console.log('AI_guess = ');
+        console.log(AI_guess);
+    }) 
+    .catch(error => { 
+        console.error('Error:', error); 
+    });
+    
+    all_guesses_AI[guesses_number][0] = +AI_guess[0]-1;
+    all_guesses_AI[guesses_number][1] = +AI_guess[1]-1;
+    all_guesses_AI[guesses_number][2] = +AI_guess[2]-1;
+    all_guesses_AI[guesses_number][3] = +AI_guess[3]-1;
+    all_evaluations_AI[guesses_number] = evaluate(all_guesses_AI[guesses_number], secret_code);
+
+    // il faut évaluer les 2 codes en même temps pour gérer bien le vainqueur
+    // une fonction d'évaluation pour les 2 au lieu d'évaluer 2 fois indépendement
 
     guesses_number += 1;
 
@@ -240,8 +416,11 @@ document.querySelector('.guess-button').addEventListener('click', (e) => {
         empty_buttons[i].classList.remove(get_color_from_int(new_guess[i]));
         new_guess[i] = -1;
     });
-
-    update_all_guesses();
+    if (!won){
+        update_all_guesses();
+    } else{
+        update_all_guesses_withAI();
+    }
 });
 
 update_all_guesses();
@@ -275,6 +454,7 @@ const evaluate = (guess, answer) => {
         won = true;
         ended = true;
         show_secret_code();
+        update_all_guesses_withAI();
         alert('You won!');
     }
 
